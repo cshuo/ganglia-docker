@@ -1,0 +1,39 @@
+gmetad:
+    build: ./gmetad 
+    ports:
+        - "22"
+    volumes: 
+        - ./gmetad_conf:/etc/ganglia/
+    links:
+        - gmond1
+        - gmond2
+        - gmond3
+        - gmond4
+
+gmond1:
+    build: ./gmond 
+    ports:
+        - "22"
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond2:
+    build: ./gmond
+    ports:
+        - "22"
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+        
+gmond3:
+    build: ./gmond
+    ports:
+        - "22"
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond4:
+    build: ./gmond
+    ports:
+        - "22"
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
