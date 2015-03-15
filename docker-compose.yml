@@ -1,9 +1,12 @@
 gmetad:
     build: ./gmetad 
-    ports:
-        - "22"
+    working_dir: /code
+    command: python test.py
     volumes: 
         - ./gmetad_conf:/etc/ganglia/
+        - .:/code
+    ports:
+        - "8000:8000"
     links:
         - gmond1
         - gmond2
@@ -12,28 +15,24 @@ gmetad:
 
 gmond1:
     build: ./gmond 
-    ports:
-        - "22"
+    command: python test.py
     volumes: 
         - ./gmond_conf:/etc/ganglia/
 
 gmond2:
     build: ./gmond
-    ports:
-        - "22"
+    command: python test.py
     volumes: 
         - ./gmond_conf:/etc/ganglia/
         
 gmond3:
     build: ./gmond
-    ports:
-        - "22"
+    command: python test.py
     volumes: 
         - ./gmond_conf:/etc/ganglia/
 
 gmond4:
     build: ./gmond
-    ports:
-        - "22"
+    command: python test.py
     volumes: 
         - ./gmond_conf:/etc/ganglia/
