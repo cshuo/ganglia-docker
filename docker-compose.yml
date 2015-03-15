@@ -15,24 +15,24 @@ gmetad:
 
 gmond1:
     build: ./gmond 
-    command: python test.py
+    command: /usr/sbin/sshd -D
     volumes: 
         - ./gmond_conf:/etc/ganglia/
 
 gmond2:
     build: ./gmond
-    command: python test.py
+    command: /usr/sbin/sshd -D
     volumes: 
         - ./gmond_conf:/etc/ganglia/
         
 gmond3:
     build: ./gmond
-    command: python test.py
+    command: /usr/sbin/sshd -D
     volumes: 
         - ./gmond_conf:/etc/ganglia/
 
 gmond4:
     build: ./gmond
-    command: python test.py
+    command: /usr/sbin/sshd -D
     volumes: 
         - ./gmond_conf:/etc/ganglia/
