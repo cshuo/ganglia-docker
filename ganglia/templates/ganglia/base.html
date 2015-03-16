@@ -1,0 +1,21 @@
+<html lang="en">
+<head>
+    {% load staticfiles%}
+    <link href="{% static 'ganglia/css/bootstrap.min.css' %}"  rel="stylesheet" type="text/css"/>
+    <link href="{% static 'ganglia/css/examples.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'ganglia/js/jquery.min.js' %}"></script>
+    <script src="{% static 'ganglia/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'ganglia/js/jquery.flot.min.js' %}"></script>
+    <script src="{% static 'ganglia/js/jquery.flot.autoMarkings.js' %}"></script>
+    <script src="{% static 'ganglia/js/jquery.flot.time.js' %}"></script>
+</head>
+
+<body>
+    {% block title %}{% endblock %}
+    {% block content %}{% endblock %}
+</body>
+<footer align=center style="bottom:0">
+	Ontology-Monitoring--Copyright cshuo; 2015-3-1
+</footer>
+</html>
+

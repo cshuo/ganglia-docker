@@ -1,6 +1,8 @@
 FROM ubuntu:14.04
 MAINTAINER cshuo
 
+RUN mkdir /code
+ADD . /code
 COPY ./sources.list /etc/apt/
 
 RUN apt-get update && apt-get install -y --force-yes \
@@ -17,3 +19,4 @@ RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/ss
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
 EXPOSE 22
+WORKDIR /code
