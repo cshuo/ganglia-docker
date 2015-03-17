@@ -217,10 +217,12 @@ function click_choose(text){
   	var update_interval = 30000;
   	var plot_index;
   	var mtc_name = obj.parentNode.parentNode.id;
+	var gra_title;
 
   	if(type == '1'){
   		time_fmt = "%H:%M";
   		plot_index = 0;
+		gra_title = "last hour";
   		op = {
   			hour: "2-digit", minute: "2-digit", second: "2-digit"
   		};
@@ -228,6 +230,7 @@ function click_choose(text){
   	else if(type == '2'){
   		time_fmt = "%y/%m/%d %H:%M";
   		plot_index = 1;
+		gra_title = "last day";
   		op = {
   			month: "short",day: "numeric", hour: "2-digit", minute: "2-digit"
   		};
@@ -235,6 +238,7 @@ function click_choose(text){
   	else if(type == '3'){
   		time_fmt = "%y/%m/%d";
   		plot_index = 2;
+		gra_title = "last week";
   		op = {
   			month: "short",day: "numeric"
   		};
@@ -242,12 +246,14 @@ function click_choose(text){
   	else{
   		time_fmt = "%y/%m/%d";
   		plot_index = 3;
+		gra_title = "last month";
   		op = {
   			month: "short",day: "numeric"
   		};
   	}
 
   	var value_ary = get_xml(url);
+	var avg = get_avg(value_ary);
   	if(value_ary.length > 0){
   		plot_list[mtc_name][plot_index]= $.plot(obj,
   			[{data:value_ary,label: obj.parentNode.parentNode.id + get_unit('{{ resource.res_name }}')}],					
@@ -257,6 +263,21 @@ function click_choose(text){
   					timezone: "browser",
   					timeformat: time_fmt
   				},
+				//this for title 
+				xaxes:[
+				  {
+				      position:'bottom' // presumably this is where your xaxis lived before
+				  },
+				  {
+					  show:true,
+					  position:'top',
+				      ticks:
+					  function(axis){
+					  return[[(axis.min+axis.max)/2,
+					  obj.parentNode.parentNode.id+" "+gra_title]]; 
+					  }
+				  },
+				],
   				series: {
   					lines: {
   						show: true,
@@ -474,6 +495,27 @@ function alert_func(){
 		$("#alert_modal").modal("show");      
 	}            
 }//end of func
+
+function get_avg(v_arr){
+	var r_array = [];
+	var count,max,min,sum;
+	max = v_arr[0];
+	min = v_arr[0];
+	sum = 0;
+	for(var i=0;i<v_arr.length;i++){
+		sum += v_arr[i];
+		if(min > v_arr[i])
+			min = v_arr[i];
+		if(max < v_arr[i])
+			max = v_arr[i];			
+	}
+	sum = sum / v_arr.length;
+	r_array.push[max];
+	r_array.push[min];
+	r_array.push[sum];
+	r_array = [1,2,3]
+	return r_array;
+}
 
 </script>
 
