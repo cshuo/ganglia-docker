@@ -12,6 +12,49 @@ gmetad:
         - gmond2
         - gmond3
         - gmond4
+        - gmond5
+        - gmond6
+        - gmond7
+        - gmond8
+        - gmond9
+        - gmond10
+        - gmond11
+
+gmond1:
+    build: ./gmond 
+    command: python test.py
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond1:
+    build: ./gmond 
+    command: python test.py
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond1:
+    build: ./gmond 
+    command: python test.py
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond1:
+    build: ./gmond 
+    command: python test.py
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond1:
+    build: ./gmond 
+    command: python test.py
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond1:
+    build: ./gmond 
+    command: python test.py
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
 
 gmond1:
     build: ./gmond 
@@ -32,6 +75,48 @@ gmond3:
         - ./gmond_conf:/etc/ganglia/
 
 gmond4:
+    build: ./gmond
+    command: python test.py
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond5:
+    build: ./gmond
+    command: python test.py
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond6:
+    build: ./gmond
+    command: python test.py
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond7:
+    build: ./gmond
+    command: python test.py
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond8:
+    build: ./gmond
+    command: python test.py
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond9:
+    build: ./gmond
+    command: python test.py
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond10:
+    build: ./gmond
+    command: python test.py
+    volumes: 
+        - ./gmond_conf:/etc/ganglia/
+
+gmond11:
     build: ./gmond
     command: python test.py
     volumes: 

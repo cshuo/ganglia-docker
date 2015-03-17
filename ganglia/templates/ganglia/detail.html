@@ -2,7 +2,7 @@
 
 {% block title %} 
 <div class="row" style="background-color:#2e2e2e;padding:15px;color:#a6a6a6">
-	<div class="col-md-6 col-md-offset-3">
+	<div class="col-xs-8 col-md-6 col-md-offset-3 col-xs-offset-2">
 		<h2 align=center>
 			Resource: {{ resource.res_name }}
 			<small>({{resource.res_hostname}})</small>
@@ -19,7 +19,7 @@
 {% block content %}
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-xs-2 col-xs-offset-1">
+		<div class="col-xs-18 col-md-2 col-md-offset-1 col-xs-offset-1">
       <br/>
       <h4>Metric List</h4>
       <ul class="nav nav-pills nav-stacked">
@@ -57,7 +57,7 @@
   </div>
 </div>
 
-<div class="col-md-8">
+<div class="col-md-8 col-xs-18">
  <div id="middle_container" align="center" class="row">
   {% for metric in metric_list %}
   {% if forloop.counter == 1 %}
@@ -184,7 +184,7 @@ $(function(){
 	{% for metric in metric_list %}
 	{% if forloop.counter == 1 %}
 	elem = document.getElementById('{{ metric.mtc_name}}');
-	init_url = "http://localhost:8000/ganglia/xml/" + '{{ resource.res_hostname}}/{{ metric.mtc_name}}/1/';
+	init_url = "http://114.212.189.132:8000/ganglia/xml/" + '{{ resource.res_hostname}}/{{ metric.mtc_name}}/1/';
 	{% endif%}
 	{% endfor%}
 	gra_elem = elem.querySelector("#graph_container").querySelector("#graph_holder1");
@@ -327,7 +327,7 @@ function click_choose(text){
   function to update in specific time interval
   **/
   function update_plot(){
-  	var base_url  = "http://localhost:8000/ganglia/xml/" + '{{ resource.res_hostname}}/'+update_name +'/';
+  	var base_url  = "http://114.212.189.132:8000/ganglia/xml/" + '{{ resource.res_hostname}}/'+update_name +'/';
   	var url_list = [];
   	url_list.push(base_url + '1/');
   	url_list.push(base_url + '2/');
@@ -387,7 +387,7 @@ function click_choose(text){
   		break;
   	}
 
-  	base_url = "http://localhost:8000/ganglia/xml/" + '{{ resource.res_hostname}}/' + url;
+  	base_url = "http://114.212.189.132:8000/ganglia/xml/" + '{{ resource.res_hostname}}/' + url;
 	//get child by id 
 	graph_id = "#graph_holder"+time_type;
 	graph_obj = obj.parentNode.parentNode.querySelector("#graph_container").querySelector(graph_id);
@@ -407,7 +407,7 @@ function click_choose(text){
   	update_name = m_name;
   	update_index = 0;
 
-  	url_item = "http://localhost:8000/ganglia/xml/" + '{{ resource.res_hostname}}/' + m_name + "/1/";
+  	url_item = "http://114.212.189.132:8000/ganglia/xml/" + '{{ resource.res_hostname}}/' + m_name + "/1/";
   	elem_plot= document.getElementById(m_name).querySelector("#graph_container").querySelector("#graph_holder1");
   	plot_g(url_item,elem_plot,'1');
   }
@@ -417,7 +417,7 @@ function click_choose(text){
   function to check whether the specified metric exceed the threshold 
   **/
   function alert_func(){    
-    var base_url = "http://localhost:8000/ganglia/xml/" + '{{ resource.res_hostname}}/';
+    var base_url = "http://114.212.189.132:8000/ganglia/xml/" + '{{ resource.res_hostname}}/';
     var s = document.getElementById("selector");    
     var alert_mtc = s.options[s.selectedIndex].text;
     var upper_bound = $("#upper_bd").val();
