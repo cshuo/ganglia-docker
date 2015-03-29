@@ -71,6 +71,7 @@
      <button onclick="button_plot('{{ metric.mtc_name}}/3/',this)" class="btn btn-primary">last week</button> 
      <button onclick="button_plot('{{ metric.mtc_name}}/4/',this)" class="btn btn-primary">last month</button> 
    </div>
+   
    <div id="graph_container" class="demo-container">
      <div id="graph_holder1" class="demo-placeholder" style="display:block"></div>
      <div id="graph_holder2" class="demo-placeholder" style="display:none"></div>
@@ -368,71 +369,67 @@ function click_choose(text){
   function get_xml(req_url){
   	var v_array = [];
   	var xml_http = new XMLHttpRequest();
-	xml_http.onreadystatechange=function(){
-		if(xml_http.readyState==4 && xml_http.status==200){
-			xmlDoc = jQuery.parseXML(xml_http.responseText);
-			$(xmlDoc).find('row').each(function(){
-					var time = parseFloat($(this).children('t').text());
-					var value = parseFloat($(this).children('v').text());
-					v_array.push([time*1000,value]);      //time series xaxis require x to be millis
-					});
-		}
-	}
 	xml_http.open("GET",req_url,false);
 	xml_http.send();
-	return v_array;
+    xmlDoc = jQuery.parseXML(xml_http.responseText);
+    $(xmlDoc).find('row').each(function(){
+            var time = parseFloat($(this).children('t').text());
+            var value = parseFloat($(this).children('v').text());
+            v_array.push([time*1000,value]);      //time series xaxis require x to be millis
+            });
+    return v_array;
   }
 
 /**
   plot according to the button clicked
  */
 function button_plot(url,obj){
-	var base_url;
-	var child_node;
-	var graph_obj;
-	var time_type;
-	time_type = url.charAt(url.length-2);
-	switch (time_type){
-		case '1': 
-			update_index = 0;
-			break;
-		case '2':
-			update_index = 1;
-			break;
-		case '3':
-			update_index = 2;
-			break;
-		case '4':
-			update_index = 3;
-			break;
-		default:
-			alert("error index");
-			break;
-	}
+    var base_url;
+    var child_node;
+    var graph_obj;
+    var time_type;
+    time_type = url.charAt(url.length-2);
+    switch (time_type){
+        case '1': 
+            update_index = 0;
+            break;
+        case '2':
+            update_index = 1;
+            break;
+        case '3':
+            update_index = 2;
+            break;
+        case '4':
+            update_index = 3;
+            break;
+        default:
+            alert("error index");
+            break;
+    }
 
-	base_url = "http://114.212.189.132:8000/ganglia/xml/" + '{{ resource.res_hostname}}/' + url;
-	//get child by id 
-	graph_id = "#graph_holder"+time_type;
-	graph_obj = obj.parentNode.parentNode.querySelector("#graph_container").querySelector(graph_id);
-	child_node = graph_obj.parentNode.children;
-	for(var i=0;i<child_node.length;i++)
-		child_node[i].style.display = 'none';
-	graph_obj.style.display = 'block';
-	plot_g(base_url,graph_obj,time_type);
+    base_url = "http://114.212.189.132:8000/ganglia/xml/" + '{{ resource.res_hostname}}/' + url;
+    //get child by id 
+    graph_id = "#graph_holder"+time_type;
+    graph_obj = obj.parentNode.parentNode.querySelector("#graph_container").querySelector(graph_id);
+    child_node = graph_obj.parentNode.children;
+    for(var i=0;i<child_node.length;i++)
+        child_node[i].style.display = 'none';
+    graph_obj.style.display = 'block';
+    plot_g(base_url,graph_obj,time_type);
 }
 
 /**
   plot according list item clicked 
  **/
 function item_plot(m_name){
-	var elem_plot;
-	var url_item = [];
-	update_name = m_name;
-	update_index = 0;
+    var elem_plot;
+    var url_item = [];
+    update_name = m_name;
+    update_index = 0;
 
-	url_item = "http://114.212.189.132:8000/ganglia/xml/" + '{{ resource.res_hostname}}/' + m_name + "/1/";
-	elem_plot= document.getElementById(m_name).querySelector("#graph_container").querySelector("#graph_holder1");
-	plot_g(url_item,elem_plot,'1');
+    url_item = "http://114.212.189.132:8000/ganglia/xml/" + '{{ resource.res_hostname}}/' + m_name + "/1/";
+    elem_plot= document.getElementById(m_name).querySelector("#graph_container").querySelector("#graph_holder1");
+    plot_g(url_item,elem_plot,'1');
 }
 
 
@@ -440,81 +437,81 @@ function item_plot(m_name){
   function to check whether the specified metric exceed the threshold 
  **/
 function alert_func(){    
-	var base_url = "http://114.212.189.132:8000/ganglia/xml/" + '{{ resource.res_hostname}}/';
-	var s = document.getElementById("selector");    
-	var alert_mtc = s.options[s.selectedIndex].text;
-	var upper_bound = $("#upper_bd").val();
-	var lower_bound = $("#lower_bd").val();    
-	var m_value = [];
-	var alert_sign = 1;
-	var all_NaN = 1;  
+    var base_url = "http://114.212.189.132:8000/ganglia/xml/" + '{{ resource.res_hostname}}/';
+    var s = document.getElementById("selector");    
+    var alert_mtc = s.options[s.selectedIndex].text;
+    var upper_bound = $("#upper_bd").val();
+    var lower_bound = $("#lower_bd").val();    
+    var m_value = [];
+    var alert_sign = 1;
+    var all_NaN = 1;  
 
-	//checkbox is not checked, return directly
-	if(!$('#enableAlert').is(':checked'))
-		return;  
+    //checkbox is not checked, return directly
+    if(!$('#enableAlert').is(':checked'))
+        return;  
 
-	if(alert_mtc == "all_together"){   //all metric of the resource together              
-		var all_mtc_array = [];      
-		{% for m in metric_list %}        //get all metric xml data in last 10 minutes
-		var m_url = base_url + '{{ m.mtc_name }}/5/';
-		var m_data = get_xml(m_url);
-		all_mtc_array.push(m_data);
-		{% endfor %}      
+    if(alert_mtc == "all_together"){   //all metric of the resource together              
+        var all_mtc_array = [];      
+        {% for m in metric_list %}        //get all metric xml data in last 10 minutes
+        var m_url = base_url + '{{ m.mtc_name }}/5/';
+        var m_data = get_xml(m_url);
+        all_mtc_array.push(m_data);
+        {% endfor %}      
 
-		for(var i=0;i<all_mtc_array[0].length;i++){
-			m_value.push(all_mtc_array[0][i][1]);
-		}
-		for(var i=1;i<all_mtc_array.length;i++){
-			for(var j=0;j<m_value.length;j++){          
-				m_value[j] += all_mtc_array[i][j][1];
-			}            
-		}
-	}
-	else{           //only one metric of the resource in the page
-		var alert_url = base_url + alert_mtc + "/5/";
-		var xml_data = get_xml(alert_url);            
-		for (var i=0;i<xml_data.length;i++){
-			m_value.push(xml_data[i][1])      
-		}      
-	}
+        for(var i=0;i<all_mtc_array[0].length;i++){
+            m_value.push(all_mtc_array[0][i][1]);
+        }
+        for(var i=1;i<all_mtc_array.length;i++){
+            for(var j=0;j<m_value.length;j++){          
+                m_value[j] += all_mtc_array[i][j][1];
+            }            
+        }
+    }
+    else{           //only one metric of the resource in the page
+        var alert_url = base_url + alert_mtc + "/5/";
+        var xml_data = get_xml(alert_url);            
+        for (var i=0;i<xml_data.length;i++){
+            m_value.push(xml_data[i][1])      
+        }      
+    }
 
-	//judge whether all value is within the threshold
-	for(var i=0;i<m_value.length;i++){      
-		if(!isNaN(m_value[i])){
-			all_NaN = 0;
-			if(m_value[i]<upper_bound && m_value[i]>lower_bound){
-				alert_sign = 0;
-			}      
-		}      
-	}
+    //judge whether all value is within the threshold
+    for(var i=0;i<m_value.length;i++){      
+        if(!isNaN(m_value[i])){
+            all_NaN = 0;
+            if(m_value[i]<upper_bound && m_value[i]>lower_bound){
+                alert_sign = 0;
+            }      
+        }      
+    }
 
-	if(all_NaN ==1 )
-		alert("all Num is NaN!!");    
-	else if(alert_sign ==1){
-		$("#warn-mtc").html(alert_mtc);
-		$("#alert_modal").modal("show");      
-	}            
+    if(all_NaN ==1 )
+        alert("all Num is NaN!!");    
+    else if(alert_sign ==1){
+        $("#warn-mtc").html(alert_mtc);
+        $("#alert_modal").modal("show");      
+    }            
 }//end of func
 
 function get_avg(v_arr){
-	var r_array = [];
-	var count,max,min,sum;
-	max = v_arr[0];
-	min = v_arr[0];
-	sum = 0;
-	for(var i=0;i<v_arr.length;i++){
-		sum += v_arr[i];
-		if(min > v_arr[i])
-			min = v_arr[i];
-		if(max < v_arr[i])
-			max = v_arr[i];			
-	}
-	sum = sum / v_arr.length;
-	r_array.push[max];
-	r_array.push[min];
-	r_array.push[sum];
-	r_array = [1,2,3]
-	return r_array;
+    var r_array = [];
+    var count,max,min,sum;
+    max = v_arr[0];
+    min = v_arr[0];
+    sum = 0;
+    for(var i=0;i<v_arr.length;i++){
+        sum += v_arr[i];
+        if(min > v_arr[i])
+            min = v_arr[i];
+        if(max < v_arr[i])
+            max = v_arr[i];			
+    }
+    sum = sum / v_arr.length;
+    r_array.push[max];
+    r_array.push[min];
+    r_array.push[sum];
+    r_array = [1,2,3]
+        return r_array;
 }
 
 </script>

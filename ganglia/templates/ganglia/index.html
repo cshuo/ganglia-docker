@@ -4,7 +4,7 @@
 	<div class="col-xs-8 col-md-6 col-md-offset-3 col-xs-offset-2">
 		<div> 
 			<h1 align=center>
-				Cluster Monitor
+				Cluster Monitoring
 			</h1>
 		</div>
 	</div>
@@ -18,7 +18,12 @@
 {% load staticfiles %}
 <div class="container-fluid"> 
 	<div class="row">
-		<div id="blank" class="col-md-4"></div>
+		<div id="blank" class="col-md-4">            
+            <div class="sm-container">
+            	<div class="demo-placeholder" id="graph-holder"></div>
+            </div>            
+        </div>        
+
 		<div id="host_div" class="col-md-4">
 			<h3 align=center>Hosts in cluster</h3>
 			{% if host_list and resource_list %}
@@ -42,21 +47,30 @@
 </div>
 
 <script type="text/javascript">
-function get_data(){
-	var texthttp;
-	texthttp = new XMLHttpRequest();
-	texthttp.onreadystatechange=function(){                
-		if(texthttp.readyState==4 && texthttp.status==200){
-			document.getElementById("myDiv").innerHTML = texthttp.responseText;
-		}
-		else{
-			document.getElementById("myDiv").innerHTML = "failed to get msg!!";
-		}
-	}
-	texthttp.open("GET","http://localhost:8000/ganglia/xml/localhost/cpu_idle/4/",true);
-	texthttp.send();
-}
 
+$(function() {
+	var down_num=1,up_num=8;
+	Morris.Donut({
+        element: 'graph-holder',
+        data: [{
+            label: "Hosts Up",
+            value: up_num
+        }, {
+            label: "Hosts Down",
+            value: down_num
+        }],
+        resize: true
+    });
+});
+
+function get_update(req_url){
+    var update_time;
+    var xml_http = new XMLHttpRequest();
+    xml_http.open("GET",req_url,false);
+    xml_http.send();
+    update_time = parseInt(xml_http.responseText);
+    return update_time;
+}
 
 /**
  function for showing the resources in the host clicked

@@ -74,3 +74,19 @@ def get_text(request, host_name, rrd_name, time_slot):
     command = "rrdtool xport --start %s --end %s DEF:ds=%s:sum:AVERAGE:step=%s XPORT:ds:legend" % (start,end,rrd_path,step)
     status,output = commands.getstatusoutput(command)
     return HttpResponse(output)
+
+
+'''
+get the last update time of the host metrics 
+return UNIX timestamp 
+'''
+def last_update(request,host_name):
+    base_url = "/var/lib/ganglia/rrds/my_cluster/" + host_name + "/load_one.rrd";
+    command = "rrdtool lastupdate %s" % base_url
+    status,output = commands.getstatusoutput(command)
+    start = output.rindex("\n") + 1
+    end = output.index(":")
+    update_time = int(output[start:end])
+    return HttpResponse(update_time);
+
+
