@@ -6,6 +6,7 @@ from ganglia.util import str_to_list,res_img,read_ganglia_conf,add_items,reason_
 import os 
 import commands 
 from sys import stdin,stdout,stderr
+import time 
 
 
 # Create your views here.
@@ -68,6 +69,10 @@ def get_text(request, host_name, rrd_name, time_slot):
     elif time_slot == "4":
         start = "end-1m"
         step = "4000"
+    # for index page get resource utilization 
+    elif time_slot == "8":      
+        start = "end-60"
+        step = "15" 
     else:        
         start = "end-600"
         step = "10"
@@ -78,15 +83,25 @@ def get_text(request, host_name, rrd_name, time_slot):
 
 '''
 get the last update time of the host metrics 
-return UNIX timestamp 
+return UNIX timestamp and now time interval 
 '''
 def last_update(request,host_name):
     base_url = "/var/lib/ganglia/rrds/my_cluster/" + host_name + "/load_one.rrd";
     command = "rrdtool lastupdate %s" % base_url
     status,output = commands.getstatusoutput(command)
+    '''
+    output string format is: 
+     sum
+
+     timestamp:  value
+    '''
+    #get the time stamp
     start = output.rindex("\n") + 1
     end = output.index(":")
     update_time = int(output[start:end])
-    return HttpResponse(update_time);
+
+    now_ts = int(time.time())
+    interval = now_ts - update_time;
+    return HttpResponse(interval);
 
 

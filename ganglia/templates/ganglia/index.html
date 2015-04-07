@@ -1,107 +1,429 @@
 {% extends "ganglia/base.html" %}
-{% block title%}
-<div class="row" style="background-color:#2e2e2e;padding:15px;color:#a6a6a6">
-	<div class="col-xs-8 col-md-6 col-md-offset-3 col-xs-offset-2">
-		<div> 
-			<h1 align=center>
-				Cluster Monitoring
-			</h1>
-		</div>
-	</div>
-	<div class="col-xs-2 col-md-1 col-md-offset-1" style="padding-top:20px">
-		<a href="#" style="font-size:20px;color:#a6a6a0">About</a>
-	</div>
-</div>
-{% endblock %}
 
 {% block content %}
-{% load staticfiles %}
-<div class="container-fluid"> 
-	<div class="row">
-		<div id="blank" class="col-md-4">            
-            <div class="sm-container">
-            	<div class="demo-placeholder" id="graph-holder"></div>
+<div id="wrapper">
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="">Monitor Admin Dashboard</a>                
+        </div>
+        <!-- /.navbar-header -->
+
+        <ul class="nav navbar-top-links navbar-right">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                </a>                   
+                <!-- /.dropdown-messages -->
+            </li>
+            <!-- /.dropdown -->
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                </a>                    
+                <!-- /.dropdown-tasks -->
+            </li>
+            <!-- /.dropdown -->
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                </a>                    
+                <!-- /.dropdown-alerts -->
+            </li>
+            <!-- /.dropdown -->
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                    </li>
+                </ul>
+                <!-- /.dropdown-user -->
+            </li>
+            <!-- /.dropdown -->
+        </ul>
+        <!-- /.navbar-top-links -->
+
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav" id="side-menu">                        
+                    <li>
+                        <div class="sm-container">
+                            <div class="demo-placeholder" id="graph-holder"></div>
+                        </div>
+                    </li>
+                        <!-- <li>
+                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li> -->
+                        <!-- <host list> -->
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Hosts<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                {% if host_list %}
+                                    {% for host in host_list %}
+                                        <li>
+                                            <a href="#">{{ host.host_name }}</a>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li>
+                                        <a href="#">no host yet...</a>
+                                    </li>
+                                {% endif %}                                                              
+                            </ul>
+                        </li>
+                        <!-- <host list> -->
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="#">Flot Charts</a>
+                                </li>
+                                <li>
+                                    <a href="#">Morris.js Charts</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>                        
+                        <li>
+                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="#">Second Level Item</a>
+                                </li>
+                                <li>
+                                    <a href="#">Second Level Item</a>
+                                </li>
+                                <li>
+                                    <a href="#">Third Level <span class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level">
+                                        <li>
+                                            <a href="#">Third Level Item</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Third Level Item</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Third Level Item</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Third Level Item</a>
+                                        </li>
+                                    </ul>
+                                    <!-- /.nav-third-level -->
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>                        
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Cluster Overview</h1>
+                </div>
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-3 col-xs-6">
+                  <!-- small box -->
+                  <div class="small-box bg-aqua">
+                    <div class="inner">
+                      <h3 id="cpu_util">0</h3>
+                      <h4>Cluster CPU ultilization</h4>
+                  </div>
+                  <div class="icon">
+                      <i class="ion ion-pie-graph"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+          </div><!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-yellow">
+                <div class="inner">
+                  <h3 id="mem_util">0</h3>
+                  <h4>Cluster Mem ultilization</h4>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+            </div><!-- ./col -->   
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-red">
+                <div class="inner">
+                  <h3 id="disk_util">0</h3>
+                  <h4>Cluster Disk ultilization</h4>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-pie-graph"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+            </div><!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-green">
+                <div class="inner">
+                  <h3 id="load_one">0</h3>
+                  <h4>Cluster Load One</h4>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-cube"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+            </div><!-- ./col -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> <span id="on_show_metric">cluster cpu last_hour </span>
+                    <div class="pull-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                Metrics
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                <li><a href="#" onclick="show_metric('cpu')">cluster Cpu last_hour</a>
+                                </li>
+                                <li><a href="#" onclick="show_metric('mem')">cluster Mem last_hour</a>
+                                </li>
+                                <li><a href="#" onclick="show_metric('network')">cluster network last_hour</a>
+                                </li>
+                                <li><a href="#" onclick="show_metric('load')">cluster Load last_hour</a>
+                                </li>                                                                
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div id="metric-graph">                    
+                    <div class="lg-container" style="display:block">
+                        <div class="demo-placeholder" id="area-chart"></div>
+                    </div>                    
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->            
+            <!-- /.panel -->                    
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-8 -->
+        <div class="col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> Alert Log
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item">
+                            <i class="fa fa-comment fa-fw"></i> Log_1
+                            <span class="pull-right text-muted small"><em>4 minutes ago</em>
+                            </span>
+                        </a>
+                        <a href="#" class="list-group-item">
+                            <i class="fa fa-twitter fa-fw"></i> Log_2
+                            <span class="pull-right text-muted small"><em>12 minutes ago</em>
+                            </span>
+                        </a>
+                        <a href="#" class="list-group-item">
+                            <i class="fa fa-envelope fa-fw"></i> Log_3
+                            <span class="pull-right text-muted small"><em>27 minutes ago</em>
+                            </span>
+                        </a>
+                        <a href="#" class="list-group-item">
+                            <i class="fa fa-tasks fa-fw"></i> Log_4
+                            <span class="pull-right text-muted small"><em>43 minutes ago</em>
+                            </span>
+                        </a>
+                        <a href="#" class="list-group-item">
+                            <i class="fa fa-upload fa-fw"></i> Log_5
+                            <span class="pull-right text-muted small"><em>11:32 AM</em>
+                            </span>
+                        </a>
+                        <a href="#" class="list-group-item">
+                            <i class="fa fa-bolt fa-fw"></i> Log_6
+                            <span class="pull-right text-muted small"><em>11:13 AM</em>
+                            </span>
+                        </a>
+                        <a href="#" class="list-group-item">
+                            <i class="fa fa-warning fa-fw"></i> Log_7
+                            <span class="pull-right text-muted small"><em>10:57 AM</em>
+                            </span>
+                        </a>
+                        <a href="#" class="list-group-item">
+                            <i class="fa fa-shopping-cart fa-fw"></i> Log_8
+                            <span class="pull-right text-muted small"><em>9:49 AM</em>
+                            </span>
+                        </a>
+                        <a href="#" class="list-group-item">
+                            <i class="fa fa-money fa-fw"></i> Log_9
+                            <span class="pull-right text-muted small"><em>Yesterday</em>
+                            </span>
+                        </a>
+                    </div>
+                    <!-- /.list-group -->
+                    <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+                </div>
+                <!-- /.panel-body -->
             </div>            
-        </div>        
-
-		<div id="host_div" class="col-md-4">
-			<h3 align=center>Hosts in cluster</h3>
-			{% if host_list and resource_list %}
-				<div class="row">
-					{% for host in host_list %}
-						<div class="col-xs-4 col-md-4" align=center>
-							<a onclick="show_res(this,'{{ host.host_name }}')">
-								<img src="{% static 'ganglia/images/pc.png' %}" height="60" width="60"></img>
-								<p>{{ host.host_name}}</p>
-							</a>
-						</div>
-					{% endfor%}
-				</div>
-			{% else %}
-				<h3 align=center>No Host</h3>
-			{% endif %}
-		</div>
-		<div id="res_div" class="col-xs-8 col-md-3 col-md-offset-1 col-xs-offset-2" style="display:none">
-		</div>
-	</div>
+        </div>
+        <!-- /.col-lg-4 -->
+    </div>
+    <!-- /.row -->
 </div>
+<!-- /#page-wrapper -->
 
-<script type="text/javascript">
+</div>
+<!-- /#wrapper -->        
+{% load staticfiles%}    
+<script src="{% static 'ganglia/dist/js/index_data.js' %}"></script>
+<script src="{% static 'ganglia/js/morris-data.js' %}"></script>
 
-$(function() {
-	var down_num=1,up_num=8;
-	Morris.Donut({
-        element: 'graph-holder',
-        data: [{
-            label: "Hosts Up",
-            value: up_num
-        }, {
-            label: "Hosts Down",
-            value: down_num
-        }],
-        resize: true
-    });
-});
+<script type="text/javascript">     
 
-function get_update(req_url){
-    var update_time;
+//draw hosts up/down graph
+//judge a host down if it didn't update for 2 minutes
+//num[0] for up host num[1] for down host
+function get_host_num(){            
+    var num = [];
+    num[0] = 0;
+    num[1] = 0;            
+    var base_url = "http://114.212.189.132:8000/ganglia/last_update/";
+    {% if host_list %}                
+    {% for host in host_list %}                                    
+    var req_url = base_url + '{{host.host_name}}';
+    var update_interval = get_update_host(req_url);
+    if(update_interval < 120)
+        num[0] += 1;
+    else 
+        num[1] += 1;
+    {% endfor %}
+    {% else %}
+    num[0] = 0;
+    num[1] = 0;                
+    {% endif %}            
+    return num;            
+}                
+
+/*function for calculating the util data
+   0: cpu, 1: mem, 2:disk, 3:load_one
+   */
+function cal_util(){
+    var base_url = "http://114.212.189.132:8000/ganglia/xml/";
+    var util_data = [];
+    var host_num = 0; 
+    var cpu_idle = 0; 
+    var mem_free = 0, mem_total=0;
+    var disk_free = 0, disk_total=0; 
+    var load_one = 0;
+
+    {% if host_list %}                
+        {% for host in host_list %}       
+            var cpu_url = base_url + '{{ host.host_name }}' + '/cpu_idle/8/';
+            var mem_url = base_url + '{{ host.host_name }}' + '/mem_free/8/';
+            var mem_total_url = base_url + '{{ host.host_name }}' + '/mem_total/8/';
+            var disk_url = base_url + '{{ host.host_name }}' + '/disk_free/8/';
+            var disk_total_url = base_url + '{{ host.host_name }}' + '/disk_total/8/';
+            var load_url = base_url + '{{ host.host_name }}' + '/load_one/8/';
+            cpu_idle += get_util_avg(cpu_url);
+            mem_free += get_util_avg(mem_url);
+            mem_total += get_util_avg(mem_total_url);
+            disk_free += get_util_avg(disk_url);
+            disk_total += get_util_avg(disk_total_url);
+            load_one += get_util_avg(load_url);            
+            host_num += 1;
+        {% endfor %}                             
+    {% else %}
+        util_data = [0,0,0,0];
+    {% endif %}
+
+    util_data[0] = 100 - cpu_idle / host_num;
+    util_data[1] = 100 * (1 - mem_free / mem_total);
+    util_data[2] = 100 * (1 - disk_free / disk_total) ;
+    util_data[3] = load_one / host_num;
+    return util_data;
+}
+
+/*function for getting usg data for specific host's metric*/
+function get_hour_metric(mtc_name){
+    var v_array = [];
+    var xml_list = [];   //list of all xml returned 
+    var url_list = [];   //url of all host's metric 
+    var base_url = "http://114.212.189.132:8000/ganglia/xml/";
     var xml_http = new XMLHttpRequest();
-    xml_http.open("GET",req_url,false);
-    xml_http.send();
-    update_time = parseInt(xml_http.responseText);
-    return update_time;
+    var xmlDoc;    
+
+    {% if host_list %}
+        {% for host in host_list %}
+            var url = base_url + '{{ host.host_name }}' + '/' + mtc_name + "/1/";
+            url_list.push(url);            
+        {% endfor %}
+    {% else %}
+        //TODO
+    {% endif %}
+
+    //get all host's mtc usg data,returned as xml
+    for(var i=0; i<url_list.length;i++){
+        xml_http.open("GET",url_list[i],false);
+        xml_http.send();
+        var xmlDoc = jQuery.parseXML(xml_http.responseText);
+        xml_list.push(xmlDoc);
+    }    
+
+    //parse xml data
+    for(var i=0; i<xml_list.length; i++){
+        var array = [];
+        $(xml_list[i]).find('row').each(function(){
+            var time = parseFloat($(this).children('t').text());
+            var value = parseFloat($(this).children('v').text());
+            array.push([time*1000,value]);      //time series xaxis require x to be millis
+            });        
+        v_array.push(array);
+    }        
+
+    //get avg of all hosts xml data     
+    var avg_data = v_array[0];    
+
+    for(var i=1; i<v_array.length;i++){        
+        for(var j=0; j<avg_data.length; j++){
+            avg_data[j][1] += v_array[i][j][1];
+            if(i == v_array.length -1) //the last array
+                avg_data[j][1] /= v_array.length;    //get avg                 
+        }
+    }    
+    return avg_data;
 }
 
-/**
- function for showing the resources in the host clicked
- **/
-function show_res(obj,h_name){
-	var added_div = document.getElementById("res_div");
-	var p_title = document.createElement('h3');
-	var br = document.createElement('br');
-	var hosts_div = document.getElementById("host_div");
-	host_div.setAttribute('class',"col-md-4 col-md-offset-2");
-	$("#res_div").empty();
-	p_title.innerHTML = "Resources in "+ h_name;
-	p_title.setAttribute('align',"center");
-	added_div.appendChild(p_title);
-	added_div.appendChild(br);
-	{% for resource in resource_list %}
-		if(h_name == '{{ resource.res_hostname }}'){
-			var res_div = document.createElement("div");
-			var res_a = document.createElement("a");
-			res_div.setAttribute('class',"alert alert-success");
-			res_div.setAttribute('align',"center");
-			res_a.setAttribute('href',"{% url 'ganglia:detail' resource.id %}");
-			res_a.innerHTML="{{ resource.res_name }}";
-			res_div.appendChild(res_a);
-			added_div.appendChild(res_div);
-		}
-	{% endfor %}
-	$("#blank").hide();
-	$("#res_div").fadeIn();
-}
+
+
+
 
 </script>
-{% endblock %}
 
+{% endblock %}

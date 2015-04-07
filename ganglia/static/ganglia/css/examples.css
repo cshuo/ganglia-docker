@@ -29,10 +29,18 @@
 	box-sizing: border-box;
 	width: 200px;
 	height: 180px;
-	padding: 5px 5px 5px 5px;
-	margin: 15px auto 30px auto;
+	padding: 1px 1px 1px 1px;
+	margin: 15px auto 15px auto;
 	/*border: 1px solid #ddd;*/
-	background: #fff;
+	/*background: #fff;*/
+}
+
+.lg-container {
+	box-sizing: border-box;
+	width: 600px;
+	height: 323px;
+	padding: 1px 1px 1px 1px;
+	margin: 15px auto 15px auto;
 }
 
 .legend table {

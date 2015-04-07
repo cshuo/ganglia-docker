@@ -30,14 +30,12 @@ add host to database
 def add_items(host_list):
     if len(host_list) == 0:
         print "host list is empty!!"
-        return 
-    
+        return     
     #delete hosts that in db but not in cluster dir
     db_host_list = Host.objects.all();
     for db_host in db_host_list:
         if db_host.host_name not in host_list:
             db_host.delete()
-
 
     for host in host_list:
         #host not in the database yet

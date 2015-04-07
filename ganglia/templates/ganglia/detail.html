@@ -369,8 +369,8 @@ function click_choose(text){
   function get_xml(req_url){
   	var v_array = [];
   	var xml_http = new XMLHttpRequest();
-	xml_http.open("GET",req_url,false);
-	xml_http.send();
+	  xml_http.open("GET",req_url,false);
+	  xml_http.send();
     xmlDoc = jQuery.parseXML(xml_http.responseText);
     $(xmlDoc).find('row').each(function(){
             var time = parseFloat($(this).children('t').text());
