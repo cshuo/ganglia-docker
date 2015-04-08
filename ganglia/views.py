@@ -21,31 +21,41 @@ def index(request):
     context = {'resource_list': resource_list,'host_list':host_list}
     return render(request,'ganglia/index.html',context)
 
+def host_info(request,host_id):
+    host = get_object_or_404(Host,pk=host_id)
+    res_list = Resource.objects.filter(host=host);
+    context = {'host':host,'res_list':res_list}    
+    return render(request,'ganglia/host.html',context)
 
-def detail(request,resource_id):
-    print "hello world"
+def res_info(request,resource_id):    
     res = get_object_or_404(Resource,pk=resource_id)
-    metric_list = Metric.objects.filter(resource=res)
+    mtc_list = Metric.objects.filter(resource=res)
+    context = {'res':res,'mtc_list':mtc_list}
+    return render(request,'ganglia/res.html',context);
 
-    #generate graph for every metric
-    path_list = res_img(metric_list)
+# def detail(request,resource_id):    
+#     res = get_object_or_404(Resource,pk=resource_id)
+#     metric_list = Metric.objects.filter(resource=res)
 
-    mtc_list = []
-    for metric in metric_list:
-        mtc= {}
-        mtc["mtc_name"] = metric.metric_name
-        mtc['img_path'] = path_list[metric.metric_name]
-        mtc_list.append(mtc)
+#     #generate graph for every metric
+#     path_list = res_img(metric_list)
+
+#     mtc_list = []
+#     for metric in metric_list:
+#         mtc= {}
+#         mtc["mtc_name"] = metric.metric_name
+#         mtc['img_path'] = path_list[metric.metric_name]
+#         mtc_list.append(mtc)
     
-    rel_namelist = reason_func(res.res_name)
-    print rel_namelist
-    rel_list = []
-    for rel_name in rel_namelist:
-        """attention after filter you get a list"""
-        rel_fil = Resource.objects.filter(res_name=rel_name.strip(),res_hostname=res.res_hostname)
-        if not len(rel_fil)==0:
-            rel_list.append(rel_fil[0])
-    return render(request,"ganglia/detail.html",{'resource':res,'metric_list':mtc_list,'relate_list':rel_list})
+#     rel_namelist = reason_func(res.res_name)
+#     print rel_namelist
+#     rel_list = []
+#     for rel_name in rel_namelist:
+#         """attention after filter you get a list"""
+#         rel_fil = Resource.objects.filter(res_name=rel_name.strip(),res_hostname=res.res_hostname)
+#         if not len(rel_fil)==0:
+#             rel_list.append(rel_fil[0])
+#     return render(request,"ganglia/detail.html",{'resource':res,'metric_list':mtc_list,'relate_list':rel_list})
 
 
 '''

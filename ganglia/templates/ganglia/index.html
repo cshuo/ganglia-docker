@@ -74,7 +74,7 @@
                                 {% if host_list %}
                                     {% for host in host_list %}
                                         <li>
-                                            <a href="#">{{ host.host_name }}</a>
+                                            <a href="{% url 'ganglia:host_info' host.id %}">{{ host.host_name }}</a>
                                         </li>
                                     {% endfor %}
                                 {% else %}
@@ -86,13 +86,19 @@
                         </li>
                         <!-- <host list> -->
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Resources<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#">Flot Charts</a>
+                                    <a href="#">Cpu</a>
                                 </li>
                                 <li>
-                                    <a href="#">Morris.js Charts</a>
+                                    <a href="#">Mem</a>
+                                </li>
+                                <li>
+                                    <a href="#">Disk</a>
+                                </li>
+                                <li>
+                                    <a href="#">Load</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
