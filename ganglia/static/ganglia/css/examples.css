@@ -35,10 +35,20 @@
 	/*background: #fff;*/
 }
 
+.mid-container {
+	box-sizing: border-box;
+	width: 500px;
+	height: 220px;
+	padding: 1px 1px 1px 1px;
+	margin: 1px auto 1px auto;
+	/*border: 1px solid #ddd;*/
+	/*background: #fff;*/
+}
+
 .lg-container {
 	box-sizing: border-box;
 	width: 600px;
-	height: 323px;
+	height: 350px;
 	padding: 1px 1px 1px 1px;
 	margin: 15px auto 15px auto;
 }

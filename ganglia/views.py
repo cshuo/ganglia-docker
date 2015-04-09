@@ -27,7 +27,7 @@ def host_info(request,host_id):
     context = {'host':host,'res_list':res_list}    
     return render(request,'ganglia/host.html',context)
 
-def res_info(request,resource_id):    
+def res_info(request,host_id,resource_id):    
     res = get_object_or_404(Resource,pk=resource_id)
     mtc_list = Metric.objects.filter(resource=res)
     context = {'res':res,'mtc_list':mtc_list}

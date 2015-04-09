@@ -63,58 +63,26 @@
                     <li>
                         <div align=center class="sm-container">
                         	<img src="{% static 'ganglia/images/pc.png' %}" height="150" width="150"></img>
-                        	<h4>{{ res.res_hostname }}</h4>
-                            <!-- <div class="demo-placeholder" id="graph-holder"></div> -->
+                        	<h4>{{ res.res_hostname }}</h4>                            
                         </div>
                     </li>                                                
-                        <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> mtc<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                {% if mtc_list %}
-                                	{% for mtc in mtc_list %}
-                                		<li>
-                                    		<a href="#">{{ mtc.metric_name }}</a>
-                                		</li>
-                                	{% endfor %}
-                                {% else %}
-                                	<li>
-	                                    <a href="#">no mtc yet...</a>
-	                                </li>	
-                                {% endif %}                                
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>                        
-                        <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Third Level <span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                    </ul>
-                                    <!-- /.nav-third-level -->
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>                        
-                    </ul>
+                    <li>
+                        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> mtc<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            {% if mtc_list %}
+                            	{% for mtc in mtc_list %}
+                            		<li>
+                                		<a href="#">{{ mtc.metric_name }}</a>
+                            		</li>
+                            	{% endfor %}
+                            {% else %}
+                            	<li>
+                                    <a href="#">no mtc yet...</a>
+                                </li>	
+                            {% endif %}                                
+                        </ul>                            
+                    </li>                                                
+                    </ul>                    
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>
@@ -156,7 +124,7 @@
                 <!-- /.panel-heading -->
                 <div id="metric-graph">                    
                     <div class="lg-container" style="display:block">
-                        <div class="demo-placeholder" id="area-chart"></div>
+                        <div class="demo-placeholder" id="mtc-chart"></div>
                     </div>                    
                 </div>
                 <!-- /.panel-body -->
@@ -172,7 +140,7 @@
                 <!-- /.panel-heading -->
                 <div id="metric-graph">                    
                     <div class="lg-container" style="display:block">
-                        <div class="demo-placeholder" id="area-chart"></div>
+                        <div class="demo-placeholder"></div>
                     </div>                    
                 </div>
                 <!-- /.panel-body -->
@@ -188,5 +156,26 @@
 
 </div>
 <!-- /#wrapper -->
+{% load staticfiles %}    
+<script src="{% static 'ganglia/dist/js/res_data.js' %}"></script>
+
+<script type="text/javascript">     
+
+var mtc_name = get_mtc_list();
+var hostname = get_hostname();
+
+function get_mtc_list(){
+    var m_list = [];    
+    {% for mtc in mtc_list %}
+        m_list.push('{{ mtc.metric_name }}');              
+    {% endfor %}
+    return m_list;
+}
+
+function get_hostname(){
+    return '{{ res.res_hostname }}';
+}
+
+</script>
 
 {% endblock %}
