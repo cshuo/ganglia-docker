@@ -15,7 +15,11 @@ $(function(){
                 show: true,
                 fill: true
             }            
-        }
+        },
+	legend: {
+	    noColumns: 4,
+	    position: 'nw'
+	}
     });        
 });
 
@@ -34,7 +38,7 @@ function data_for_plot(res_name){
         d2 = get_hour_metric(mtc_2);
         d3 = get_hour_metric(mtc_3);
         d4 = get_hour_metric(mtc_4);        
-        datasets = [{data:d1,label:"cpu_user",color:"#3c8d00"},{data:d2,label:"cpu_system",color:"#3c8dcc"},
+        datasets = [{data:d1,label:"cpu_user  ",color:"#3c8d00"},{data:d2,label:"cpu_system",color:"#3c8dcc"},
         {data:d3,label:"cpu_wait",color:"#eeeeff"},{data:d4,label:"cpu_idle",color:"#66ffee"}];               
     } 
     if(res_name == "mem"){
