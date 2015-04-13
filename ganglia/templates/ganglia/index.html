@@ -230,8 +230,7 @@
                 <div id="metric-graph">                    
                     <div class="lg-container" style="display:block">
                         <div class="demo-placeholder" id="area-chart"></div>
-                    </div>                    
-	            <div id="chart-legend"></div>
+                    </div>                    	            
                 </div>
                 <!-- /.panel-body -->
             </div>
@@ -324,7 +323,7 @@ function get_host_num(){
     var base_url = "http://114.212.189.132:8000/ganglia/last_update/";
     {% if host_list %}                
     {% for host in host_list %}                                    
-    var req_url = base_url + '{{host.host_name}}';
+    var req_url = base_url + '{{ host.host_name }}';
     var update_interval = get_update_host(req_url);
     if(update_interval < 120)
         num[0] += 1;
@@ -337,99 +336,6 @@ function get_host_num(){
     {% endif %}            
     return num;            
 }                
-
-/*function for calculating the util data
-   0: cpu, 1: mem, 2:disk, 3:load_one
-   */
-function cal_util(){
-    var base_url = "http://114.212.189.132:8000/ganglia/xml/";
-    var util_data = [];
-    var host_num = 0; 
-    var cpu_idle = 0; 
-    var mem_free = 0, mem_total=0;
-    var disk_free = 0, disk_total=0; 
-    var load_one = 0;
-
-    {% if host_list %}                
-        {% for host in host_list %}       
-            var cpu_url = base_url + '{{ host.host_name }}' + '/cpu_idle/8/';
-            var mem_url = base_url + '{{ host.host_name }}' + '/mem_free/8/';
-            var mem_total_url = base_url + '{{ host.host_name }}' + '/mem_total/8/';
-            var disk_url = base_url + '{{ host.host_name }}' + '/disk_free/8/';
-            var disk_total_url = base_url + '{{ host.host_name }}' + '/disk_total/8/';
-            var load_url = base_url + '{{ host.host_name }}' + '/load_one/8/';
-            cpu_idle += get_util_avg(cpu_url);
-            mem_free += get_util_avg(mem_url);
-            mem_total += get_util_avg(mem_total_url);
-            disk_free += get_util_avg(disk_url);
-            disk_total += get_util_avg(disk_total_url);
-            load_one += get_util_avg(load_url);            
-            host_num += 1;
-        {% endfor %}                             
-    {% else %}
-        util_data = [0,0,0,0];
-    {% endif %}
-
-    util_data[0] = 100 - cpu_idle / host_num;
-    util_data[1] = 100 * (1 - mem_free / mem_total);
-    util_data[2] = 100 * (1 - disk_free / disk_total) ;
-    util_data[3] = load_one / host_num;
-    return util_data;
-}
-
-/*function for getting usg data for specific host's metric*/
-function get_hour_metric(mtc_name){
-    var v_array = [];
-    var xml_list = [];   //list of all xml returned 
-    var url_list = [];   //url of all host's metric 
-    var base_url = "http://114.212.189.132:8000/ganglia/xml/";
-    var xml_http = new XMLHttpRequest();
-    var xmlDoc;    
-
-    {% if host_list %}
-        {% for host in host_list %}
-            var url = base_url + '{{ host.host_name }}' + '/' + mtc_name + "/1/";
-            url_list.push(url);            
-        {% endfor %}
-    {% else %}
-        //TODO
-    {% endif %}
-
-    //get all host's mtc usg data,returned as xml
-    for(var i=0; i<url_list.length;i++){
-        xml_http.open("GET",url_list[i],false);
-        xml_http.send();
-        var xmlDoc = jQuery.parseXML(xml_http.responseText);
-        xml_list.push(xmlDoc);
-    }    
-
-    //parse xml data
-    for(var i=0; i<xml_list.length; i++){
-        var array = [];
-        $(xml_list[i]).find('row').each(function(){
-            var time = parseFloat($(this).children('t').text());
-            var value = parseFloat($(this).children('v').text());
-            array.push([time*1000,value]);      //time series xaxis require x to be millis
-            });        
-        v_array.push(array);
-    }        
-
-    //get avg of all hosts xml data     
-    var avg_data = v_array[0];    
-
-    for(var i=1; i<v_array.length;i++){        
-        for(var j=0; j<avg_data.length; j++){
-            avg_data[j][1] += v_array[i][j][1];
-            if(i == v_array.length -1) //the last array
-                avg_data[j][1] /= v_array.length;    //get avg                 
-        }
-    }    
-    return avg_data;
-}
-
-
-
-
 
 </script>
 

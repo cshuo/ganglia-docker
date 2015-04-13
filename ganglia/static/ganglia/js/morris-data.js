@@ -1,7 +1,7 @@
 var metric_plot;   //global plot obj for plotting 
 
 
-$(function(){
+$(function(){    
     var init_dataset = data_for_plot("cpu");   // init to show cluster cpu util 
     metric_plot = $.plot("#area-chart", init_dataset, {
         grid: {
@@ -23,51 +23,59 @@ $(function(){
     });        
 });
 
+/*function for getting usg data for specific host's metric*/
+function get_hour_metric(mtc_name){    
+    var v_array = [];
+    var base_url = "http://114.212.189.132:8000/ganglia/hour_mtc_avg/" + mtc_name;
+    var xml_doc;
+    var xml_http = new XMLHttpRequest();    
+    
+    xml_http.open("GET",base_url,false);
+    xml_http.send();
+    xml_doc = jQuery.parseXML(xml_http.responseText); 
+
+    $(xml_doc).find('row').each(function(){
+            var time = parseFloat($(this).children(":eq(0)").text());
+            var sum = parseFloat($(this).children(":eq(1)").text());
+            var num = parseFloat($(this).children(":eq(2)").text())
+            var avg = (sum/num).toFixed(2);
+            v_array.push([time*1000,avg]);      //time series xaxis require x to be millis
+            });            
+    return v_array;
+};
+
 
 /*get all metric data of res from all hosts and preparing for plotting*/
 function data_for_plot(res_name){
     var mtc_1,mtc_2,mtc_3,mtc_4;
     var d1,d2,d3,d4;
-    var datasets;
-    if(res_name == "cpu"){
-        mtc_1 = "cpu_user";
-        mtc_2 = "cpu_system";
-        mtc_3 = "cpu_nice";
-        mtc_4 = "cpu_idle";        
-        d1 = get_hour_metric(mtc_1);
-        d2 = get_hour_metric(mtc_2);
-        d3 = get_hour_metric(mtc_3);
-        d4 = get_hour_metric(mtc_4);        
+    var datasets;    
+    if(res_name == "cpu"){        
+        d1 = get_hour_metric("cpu_user");
+        d2 = get_hour_metric("cpu_system");
+        d3 = get_hour_metric("cpu_nice");
+        d4 = get_hour_metric("cpu_idle");        
         datasets = [{data:d1,label:"cpu_user  ",color:"#3c8d00"},{data:d2,label:"cpu_system",color:"#3c8dcc"},
         {data:d3,label:"cpu_wait",color:"#eeeeff"},{data:d4,label:"cpu_idle",color:"#66ffee"}];               
     } 
-    if(res_name == "mem"){
-        mtc_1 = "mem_free";
-        mtc_2 = "mem_cached";
-        mtc_3 = "mem_buffers";
-        mtc_4 = "mem_total";        
-        d1 = get_hour_metric(mtc_1);
-        d2 = get_hour_metric(mtc_2);
-        d3 = get_hour_metric(mtc_3);
-        d4 = get_hour_metric(mtc_4);
+    if(res_name == "mem"){        
+        d1 = get_hour_metric("mem_free");
+        d2 = get_hour_metric("mem_cached");
+        d3 = get_hour_metric("mem_buffers");
+        d4 = get_hour_metric("mem_total");
         datasets = [{data:d1,label:"mem_free",color:"#3c8d00"},{data:d2,label:"mem_cached",color:"#3c8dcc"},
-        {data:d3,label:"mem_buffers",color:"#3c8dff"},{data:d4,label:"mem_total",color:"#3c9d00"}];               
+        {data:d3,label:"mem_buffers",color:"#eeeeff"},{data:d4,label:"mem_total",color:"#66ffee"}];               
     }
-    if(res_name == "load"){
-        mtc_1 = "load_one";
-        mtc_2 = "load_five";
-        mtc_3 = "load_fifteen";
-        d1 = get_hour_metric(mtc_1);
-        d2 = get_hour_metric(mtc_2);
-        d3 = get_hour_metric(mtc_3);        
+    if(res_name == "load"){        
+        d1 = get_hour_metric("load_one");
+        d2 = get_hour_metric("load_five");
+        d3 = get_hour_metric("load_fifteen");        
         datasets = [{data:d1,label:"load_one",color:"#3c8d00"},{data:d2,label:"load_five",color:"#3c8dcc"},
         {data:d3,label:"load_fifteen",color:"#3c8dff"}];        
     }
-    if(res_name == "network"){
-        mtc_1 = "bytes_in";
-        mtc_2 = "bytes_out";
-        d1 = get_hour_metric(mtc_1);
-        d2 = get_hour_metric(mtc_2);
+    if(res_name == "network"){        
+        d1 = get_hour_metric("bytes_in");
+        d2 = get_hour_metric("bytes_out");
         datasets = [{data:d1,label:"bytes_in",color:"#3c8d00"},{data:d2,label:"bytes_out",color:"#3c8dcc"}];        
     }
     return datasets;

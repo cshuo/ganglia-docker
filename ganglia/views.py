@@ -111,7 +111,30 @@ def last_update(request,host_name):
     update_time = int(output[start:end])
 
     now_ts = int(time.time())
-    interval = now_ts - update_time;
-    return HttpResponse(interval);
+    interval = now_ts - update_time
+    return HttpResponse(interval)
 
 
+#get avg of specified mtc of all hosts of last_update
+#for overview 
+def last_mtc_avg(request,rrd_name):
+    base_url = "/var/lib/ganglia/rrds/my_cluster/__SummaryInfo__/" + rrd_name +".rrd"
+    command = "rrdtool lastupdate %s" % base_url
+    status,output = commands.getstatusoutput(command)
+    
+    #get value sum and host num 
+    #output format is 
+    # sum num
+    #
+    # 1428893532: 2.3 1
+    start = output.index(":") + 2
+    v_pair = output[start:]
+    return HttpResponse(v_pair)
+
+
+#all hosts's avg metric value during last hour
+def hour_mtc_avg(request,rrd_name):
+    base_url = "/var/lib/ganglia/rrds/my_cluster/__SummaryInfo__/" + rrd_name +".rrd"
+    command = "rrdtool xport --start end-1h --end now --step 10 DEF:ds1=%s:sum:AVERAGE DEF:ds2=%s:num:AVERAGE XPORT:ds1:sum XPORT:ds2:num" % (base_url,base_url)
+    status, output = commands.getstatusoutput(command)
+    return HttpResponse(output)
