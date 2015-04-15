@@ -105,17 +105,17 @@
                     <div class="pull-right">
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                Metrics
+                                Time
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
-                                <li><a href="#" onclick="show_metric('cpu')">cluster Cpu last_hour</a>
+                                <li><a href="#" onclick="show_metric('cpu')">last_hour</a>
                                 </li>
-                                <li><a href="#" onclick="show_metric('mem')">cluster Mem last_hour</a>
+                                <li><a href="#" onclick="show_metric('mem')">last day</a>
                                 </li>
-                                <li><a href="#" onclick="show_metric('network')">cluster network last_hour</a>
+                                <li><a href="#" onclick="show_metric('network')">last week</a>
                                 </li>
-                                <li><a href="#" onclick="show_metric('load')">cluster Load last_hour</a>
+                                <li><a href="#" onclick="show_metric('load')">last month</a>
                                 </li>                                                                
                             </ul>
                         </div>
@@ -137,10 +137,11 @@
                 <div class="panel-heading">
                     <i class="fa fa-warning fa-fw"></i> <span id="on_show_metric">Alert</span>                    
                 </div>
-                <!-- /.panel-heading -->
+                <!-- /.panel-heading -->        
                 <div id="metric-graph">                    
                     <div class="lg-container" style="display:block">
-                        <div class="demo-placeholder"></div>
+                        <div class="demo-placeholder">                            
+                        </div>
                     </div>                    
                 </div>
                 <!-- /.panel-body -->
@@ -162,7 +163,7 @@
 <script type="text/javascript">     
 
 var mtc_name = get_mtc_list();
-var hostname = get_hostname();
+var hostname = '{{ res.res_hostname }}';
 
 function get_mtc_list(){
     var m_list = [];    
@@ -170,12 +171,7 @@ function get_mtc_list(){
         m_list.push('{{ mtc.metric_name }}');              
     {% endfor %}
     return m_list;
-}
-
-function get_hostname(){
-    return '{{ res.res_hostname }}';
-}
-
+}    
 </script>
 
 {% endblock %}

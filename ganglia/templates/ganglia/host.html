@@ -108,12 +108,18 @@
                   <div class="pull-right">
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                            Metrics
+                            Time
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
-                            <li><a href="#" onclick="show_metric('cpu')">test</a>
+                            <li><a onclick="show_metric('cpu')">last hour</a>
                             </li>                                
+                            <li><a onclick="show_metric('cpu')">last day</a>
+                            </li>
+                            <li><a onclick="show_metric('cpu')">last week</a>
+                            </li>
+                            <li><a onclick="show_metric('cpu')">last month</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -134,12 +140,18 @@
           <div class="pull-right">
             <div class="btn-group">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                    Metrics
+                    Time
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu pull-right" role="menu">
-                    <li><a href="#" onclick="show_metric('cpu')">test</a>
+                    <li><a onclick="show_metric('cpu')">last hour</a>
                     </li>                                
+                    <li><a onclick="show_metric('cpu')">last day</a>
+                    </li>
+                    <li><a onclick="show_metric('cpu')">last week</a>
+                    </li>
+                    <li><a onclick="show_metric('cpu')">last month</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -164,13 +176,19 @@
           <div class="pull-right">
             <div class="btn-group">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                    Metrics
+                    Time
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu pull-right" role="menu">
-                    <li><a href="#" onclick="show_metric('cpu')">test</a>
+                    <li><a onclick="show_metric('cpu')">last hour</a>
                     </li>                                
-                </ul>
+                    <li><a onclick="show_metric('cpu')">last day</a>
+                    </li>
+                    <li><a onclick="show_metric('cpu')">last week</a>
+                    </li>
+                    <li><a onclick="show_metric('cpu')">last month</a>
+                    </li>
+                    </ul>
             </div>
         </div>
     </div>
@@ -190,12 +208,18 @@
       <div class="pull-right">
         <div class="btn-group">
             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                Metrics
+                Time
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu pull-right" role="menu">
-                <li><a href="#" onclick="show_metric('cpu')">test</a>
+                <li><a onclick="show_metric('cpu')">last hour</a>
                 </li>                                
+                <li><a onclick="show_metric('cpu')">last day</a>
+                </li>
+                <li><a onclick="show_metric('cpu')">last week</a>
+                </li>
+                <li><a onclick="show_metric('cpu')">last month</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -223,48 +247,6 @@
 <script src="{% static 'ganglia/dist/js/host_data.js' %}"></script>
 
 <script type="text/javascript">     
-/*
- *get metrics msg of a res with a specified time interval 
- */
-function get_plot_msg(res_name,time_slot){
-    var base_url = "http://114.212.189.132:8000/ganglia/xml/" + '{{ host.host_name }}';
-    var dataset = [];   //for datas of every metric
-    var url_list = [];  //url for metrics 
-    var mtc_name = [];    
-    var plot_color = ["#3c8d00","#3c8dcc","#eeeeff","#66ffee"];
-
-    if(res_name == 'cpu'){
-        mtc_name = ['cpu_system','cpu_user','cpu_idle','cpu_nice'];        
-        url_list.push(base_url+'/'+'cpu_system/'+time_slot+'/');
-        url_list.push(base_url+'/'+'cpu_user/'+time_slot+'/');
-        url_list.push(base_url+'/'+'cpu_idle/'+time_slot+'/');
-        url_list.push(base_url+'/'+'cpu_nice/'+time_slot+'/');
-    }
-    if(res_name == 'mem'){        
-        mtc_name = ['mem_total','mem_free','mem_shared','mem_buffers'];
-        url_list.push(base_url+'/'+'mem_total/'+time_slot+'/');
-        url_list.push(base_url+'/'+'mem_free/'+time_slot+'/');
-        url_list.push(base_url+'/'+'mem_shared/'+time_slot+'/');
-        url_list.push(base_url+'/'+'mem_buffers/'+time_slot+'/');
-    }
-    if(res_name == 'disk'){
-        mtc_name = ['disk_free','disk_total'];
-        url_list.push(base_url+'/'+'disk_free/'+time_slot+'/');
-        url_list.push(base_url+'/'+'disk_total/'+time_slot+'/');
-    }
-    if(res_name == 'net'){
-        mtc_name = ['bytes_in','bytes_out'];
-        url_list.push(base_url+'/'+'bytes_in/'+time_slot+'/');
-        url_list.push(base_url+'/'+'bytes_out/'+time_slot+'/');
-    }
-
-    for(var i=0; i<url_list.length; i++){
-        var data_pair = get_mtc_msg(url_list[i]);        
-        var plot_data = {data:data_pair,label:mtc_name[i],color:plot_color[i]};
-        dataset.push(plot_data);    
-    }
-
-    return dataset;
-}
+var hostname = '{{ host.host_name }}';
 </script>
 {% endblock %}
