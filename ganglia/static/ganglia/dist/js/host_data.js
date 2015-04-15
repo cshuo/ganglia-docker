@@ -21,7 +21,7 @@ function get_mtc_msg(req_url){
 
 $(function(){	
 
-	cpu_plot = $.plot("#cpu-chart", get_plot_msg('cpu','1'), {
+	cpu_plot = $.plot("#cpu-chart", get_plot_msg('cpu','1'), {        
         grid: {
                 borderColor: "#f3f3f3",
                 borderWidth: 1,

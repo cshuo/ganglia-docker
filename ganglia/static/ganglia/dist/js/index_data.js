@@ -33,19 +33,16 @@ function update_util(){
     var disk_elem = document.getElementById("disk_util");
     var load_elem = document.getElementById("load_one");
 
-    cpu_elem.innerHTML = 100 - get_mtc_avg('cpu_idle').toFixed(1);
-    mem_elem.innerHTML = (100 - get_mtc_avg('mem_free') / get_mtc_avg('mem_total')).toFixed(1);
-    disk_elem.innerHTML = (100 - 100 * get_mtc_avg('disk_free') /get_mtc_avg('disk_total')).toFixed(1);
-    load_elem.innerHTML = get_mtc_avg('load_one').toFixed(1);	
-    // cpu_elem.innerHTML = "50%";
-    // var update_data = cal_util();
-    // cpu_elem.innerHTML = update_data[ 0].toFixed(1) + '%';
-    // mem_elem.innerHTML = update_data[1].toFixed(1) + '%';
-    // disk_elem.innerHTML = update_data[2].toFixed(1) + '%';
-    // load_elem.innerHTML = update_data[3].toFixed(1);
+    cpu_elem.innerHTML = (100 - get_mtc_avg('cpu_idle')).toFixed(1) + '%';    
+    mem_elem.innerHTML = (100 - 100 * get_mtc_avg('mem_free') / get_mtc_avg('mem_total')).toFixed(1) + '%';
+    disk_elem.innerHTML = (100 - 100 * get_mtc_avg('disk_free') /get_mtc_avg('disk_total')).toFixed(1) + '%';
+    load_elem.innerHTML = get_mtc_avg('load_one').toFixed(1);	    
 }
 
 
+/*
+ * get metric avg use data
+*/
 function get_mtc_avg(mtc_name){
 	var base_url = "http://114.212.189.132:8000/ganglia/last_mtc_avg/" + mtc_name;
 	var sum, num;

@@ -4,23 +4,61 @@ var metric_plot;   //global plot obj for plotting
 $(function(){    
     var init_dataset = data_for_plot("cpu");   // init to show cluster cpu util 
     metric_plot = $.plot("#area-chart", init_dataset, {
+        xaxis: {
+                    mode: "time",                    
+                    timeformat: "%H:%M:%S"
+                },
         grid: {
                 borderColor: "#f3f3f3",
+                tickColor: "#f3f3f3",
                 borderWidth: 1,
-                tickColor: "#f3f3f3"
+                hoverable: true,          
+                clickable: true           
               },
         series: {
-            stack: true,
+            stack: false,
             lines: {
                 show: true,
                 fill: true
+            },
+            points: 
+            {
+                show: false
             }            
-        },
-	legend: {
-	    noColumns: 4,
-	    position: 'nw'
-	}
+        },        
+    	legend: {
+    	    noColumns: 4,
+    	    position: 'nw'
+    	}
     });        
+
+    var op = {
+            hour: "2-digit", minute: "2-digit", second: "2-digit"
+        };    
+
+    $("<div id='tooltip'></div>").css({
+            position: "absolute",
+            display: "none",
+            border: "1px solid #66ffee",
+            padding: "2px",
+            "background-color": "#ffeeff", 
+            "border-radius":"3px",
+            opacity: 0.9
+        }).appendTo("body");
+
+    $("#area-chart").bind("plothover", function (event, pos, item) {
+            if (item) {                
+                var x = item.datapoint[0]/1000,
+                y = item.datapoint[1].toFixed(2);
+                var t = new Date(1970,0,1);                              
+                t.setSeconds(x);
+                $("#tooltip").html(t.toLocaleDateString("en-US",op)+"<br/>"+item.series.label+": "+y).  
+                css({top: item.pageY+5, left: item.pageX+5}).
+                fadeIn(150);
+            } else {
+                $("#tooltip").hide();
+            }
+    });
 });
 
 /*function for getting usg data for specific host's metric*/
