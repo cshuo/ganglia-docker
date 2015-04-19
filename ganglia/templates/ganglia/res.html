@@ -72,7 +72,7 @@
                             {% if mtc_list %}
                             	{% for mtc in mtc_list %}
                             		<li>
-                                		<a href="#">{{ mtc.metric_name }}</a>
+                                		<a href="#" onclick="switch_mtc('{{ mtc.metric_name }}')">{{ mtc.metric_name }}</a>
                             		</li>
                             	{% endfor %}
                             {% else %}
@@ -97,11 +97,13 @@
             </div>
             <!-- /.row -->            
     <!-- /.row -->
+    <br />
     <div class="row">
         <div class="col-lg-8">
         	<div class="panel panel-default">
                 <div class="panel-heading">
-                    <i class="fa fa-bar-chart-o fa-fw"></i> <span id="on_show_metric">{{res.res_name}} last_hour </span>
+                    <i class="fa fa-bar-chart-o fa-fw"></i> <span id="on_show_metric"></span>
+                    <span style="padding-left:200px" id="time_name">last hour</span>
                     <div class="pull-right">
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -109,13 +111,13 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
-                                <li><a href="#" onclick="show_metric('cpu')">last_hour</a>
+                                <li><a href="#" onclick="switch_time('1')">last_hour</a>
                                 </li>
-                                <li><a href="#" onclick="show_metric('mem')">last day</a>
+                                <li><a href="#" onclick="switch_time('2')">last day</a>
                                 </li>
-                                <li><a href="#" onclick="show_metric('network')">last week</a>
+                                <li><a href="#" onclick="switch_time('3')">last week</a>
                                 </li>
-                                <li><a href="#" onclick="show_metric('load')">last month</a>
+                                <li><a href="#" onclick="switch_time('4')">last month</a>
                                 </li>                                                                
                             </ul>
                         </div>
@@ -135,14 +137,40 @@
         <div class="col-lg-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <i class="fa fa-warning fa-fw"></i> <span id="on_show_metric">Alert</span>                    
+                    <i class="fa fa-warning fa-fw"></i> <span>Alert</span>                    
                 </div>
                 <!-- /.panel-heading -->        
-                <div id="metric-graph">                    
-                    <div class="lg-container" style="display:block">
-                        <div class="demo-placeholder">                            
+                <div class="panel-body">                         
+                    <div id="alert-content" style="display:block">               
+                        <h4>Alert on:</h4>       
+                        <select class="form-control" id='selector'>
+                            <option>all_together</option>
+                            {% for mtc in mtc_list %}
+                                <option>{{ mtc.metric_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <br/>
+                         <h4>Threshold: <span id="unit"></span></h4>          
+                         <div class="input-group">                          
+                          <input type="text" class="form-control" placeholder="low bound" id="low_b">
+                          <span class="input-group-addon" id="basic-addon1">~~</span>
+                          <input type="text" class="form-control" placeholder="up bound" id="up_b">
+                        </div>                    
+                         <br/>
+                         <div class='pull-right'>                      
+                            <button type="button" id="reset_button" class="btn btn-default" onclick="reset_input()">
+                              reset
+                            </button>                            
+                             <button type="button" id="check_button" class="btn btn-primary" style="margin:15px" onclick="check_func()">
+                              submitting
+                            </button>    
                         </div>
-                    </div>                    
+                  </div>    
+                  <div id="alert-content-setted" style="display:none">      
+                    <h4>Alert on: <span id="alert-name"></span></h4><br/>
+                    <h4>low-bound: <span id="lower-setted"></span></h4><br/>
+                    <h4>up-bound: <span id="upper-setted"></span></h4>
+                  </div>                                                                          
                 </div>
                 <!-- /.panel-body -->
             </div>
@@ -156,14 +184,49 @@
 <!-- /#page-wrapper -->
 
 </div>
-<!-- /#wrapper -->
-{% load staticfiles %}    
-<script src="{% static 'ganglia/dist/js/res_data.js' %}"></script>
 
-<script type="text/javascript">     
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger" role="alert">
+         <p><span id="warn-mtc"></span> have been exceeding the threshold in last 10 minutes</p>         
+           </div>     
+        {% if relate_list %}
+           <h4 align="center">Suggested metering list: </h4>
+           <ul style="padding-left:60px">
+            {% for res in relate_list %}
+            <li><a href="{% url 'ganglia:res_info' host_id res.id %}">{{res.res_name}}</a></li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <h5> Maybe this is the cause of the problem... </h5>
+          {% endif %}                 
+      </div>
+      <div class="modal-footer">
+        <div class="pull-left">
+            <label>
+              <input id="enableAlert" type="checkbox"></input>  
+              <span style="padding:3px;font-size:15px">stop alertting this.</span>
+            </label>
+        </div>
+        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="reset_check()">Close</button>        
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- /#wrapper -->
+
+<script type="text/javascript"> 
 
 var mtc_name = get_mtc_list();
 var hostname = '{{ res.res_hostname }}';
+var res_name = '{{res.res_name}}';
 
 function get_mtc_list(){
     var m_list = [];    
@@ -172,6 +235,9 @@ function get_mtc_list(){
     {% endfor %}
     return m_list;
 }    
+
 </script>
 
+{% load staticfiles %}    
+<script src="{% static 'ganglia/dist/js/res_data.js' %}"></script>
 {% endblock %}

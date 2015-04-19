@@ -453,7 +453,7 @@ function alert_func(){
     if(alert_mtc == "all_together"){   //all metric of the resource together              
         var all_mtc_array = [];      
         {% for m in metric_list %}        //get all metric xml data in last 10 minutes
-        var m_url = base_url + '{{ m.mtc_name }}/5/';
+        var m_url = base_url + '{{ m.mtc_name }}/8/';
         var m_data = get_xml(m_url);
         all_mtc_array.push(m_data);
         {% endfor %}      

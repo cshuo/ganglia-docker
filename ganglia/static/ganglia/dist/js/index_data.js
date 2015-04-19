@@ -1,9 +1,31 @@
 var donut;   // for draw host status graph
 var down_num = 0, up_num = 0;    //for update donut graph
 var metric_plot;   //global plot obj for plotting 
+var onshow_res="cpu";    //res showwing now 
 
-//init module hosts status
-$(function() {                    	
+
+//function for initting page modules
+$(function(){
+	init_hstatus();  //init module hosts status
+    update_util();   //init module res util     
+    plot_avg("#area-chart","cpu",false);   //init to show cpu info 
+});
+
+//definite time task 
+$(function(){
+	//update the Host up/down status every 120 seconds 
+	setInterval(update_host_status,120000);
+
+	//update the overview cluster every 100s
+	setInterval(update_util,15000);
+
+	//update cluster overview
+	setInterval(update_cluster_res,3000);
+});
+
+
+//function for init host status 
+function init_hstatus(){
 	var num_pair = get_host_num();
 	up_num = num_pair[0];            
 	down_num = num_pair[1];              
@@ -18,20 +40,12 @@ $(function() {
 		}],
 		resize: true
 	});
-});
+}
 
-//init cluster resource utilization
-$(function(){
-    update_util();    
-});
-
-//update the Host up/down status every 120 seconds 
-setInterval(update_host_status,120000);
-
-//init cluster overview to cpu usg
-$(function(){    
-    var init_dataset = data_for_plot("cpu");   // init to show cluster cpu util 
-    metric_plot = $.plot("#area-chart", init_dataset, {
+//function for plotting cluster overview
+function plot_avg(elem_id,res_name,stack_opt){
+   // init to show cluster cpu util 
+    metric_plot = $.plot(elem_id, data_for_plot(res_name), {
         xaxis: {
                     mode: "time",                    
                     timeformat: "%H:%M:%S"
@@ -44,7 +58,7 @@ $(function(){
                 clickable: true           
               },
         series: {
-            stack: false,
+            stack: stack_opt,
             lines: {
                 show: true,
                 fill: true
@@ -67,9 +81,9 @@ $(function(){
     $("<div id='tooltip'></div>").css({
             position: "absolute",
             display: "none",
-            border: "1px solid #66ffee",
-            padding: "2px",
-            "background-color": "#ffeeff", 
+            border: "2px solid #FFFF99",
+            padding: "10px",
+            "background-color": "#FFCC99", 
             "border-radius":"3px",
             opacity: 0.9
         }).appendTo("body");
@@ -87,7 +101,15 @@ $(function(){
                 $("#tooltip").hide();
             }
     });
-});
+}
+
+//function for updating the cluster overview
+function update_cluster_res() {        
+	var datasets = data_for_plot(onshow_res);	        
+	metric_plot.setData(datasets);    
+	metric_plot.setupGrid();
+	metric_plot.draw();    
+}
 
 /*function for getting usg data for specific host's metric*/
 function get_hour_metric(mtc_name){    
@@ -150,6 +172,7 @@ function data_for_plot(res_name){
 //for drawdown list click actions
 function show_metric(res_name){
     var datasets = data_for_plot(res_name);
+    onshow_res = res_name;
     metric_plot.setData(datasets);
     metric_plot.setupGrid();
     metric_plot.draw();

@@ -72,6 +72,14 @@
     height: 100%;
 }
 
+.tooltip {
+	color: blue;
+}
+
+.round-corner {
+	border-radius: 4px;
+}
+
 footer {
 	position: absolute;
 	bottom: 0;

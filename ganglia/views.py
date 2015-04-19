@@ -30,7 +30,16 @@ def host_info(request,host_id):
 def res_info(request,host_id,resource_id):    
     res = get_object_or_404(Resource,pk=resource_id)
     mtc_list = Metric.objects.filter(resource=res)
-    context = {'res':res,'mtc_list':mtc_list}
+    #get related res list 
+    rel_namelist = reason_func(res.res_name)
+    rel_list = []
+    for rel_name in rel_namelist:
+        """attention after filter you get a list"""
+        rel_fil = Resource.objects.filter(res_name=rel_name.strip(),res_hostname=res.res_hostname)
+        if not len(rel_fil)==0:
+            rel_list.append(rel_fil[0])
+
+    context = {'res':res,'mtc_list':mtc_list,'relate_list':rel_list,'host_id':host_id}
     return render(request,'ganglia/res.html',context);
 
 '''
@@ -43,8 +52,8 @@ def get_text(request, host_name, rrd_name, time_slot):
 
     end = "now"    
     if time_slot == "1": 
-        start = "end-1h"
-        step = "10"
+        start = "end-300"
+        step = "3"
     elif time_slot == "2":
         start = "end-1d"
         step = "240"
