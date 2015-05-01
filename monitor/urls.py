@@ -6,6 +6,6 @@ urlpatterns = patterns('',
     # url(r'^$', 'monitor.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^ganglia/', include('ganglia.urls',namespace="ganglia")),
+    url(r'^', include('ganglia.urls',namespace="ganglia")),
     url(r'^admin/', include(admin.site.urls)),
 )
