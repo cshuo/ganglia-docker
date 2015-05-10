@@ -10,7 +10,6 @@ class Host(models.Model):
 class Resource(models.Model):
 	host = models.ForeignKey(Host)
 	res_hostname = models.CharField(max_length=200)
-	res_related = models.TextField(default="")
 	res_name = models.CharField(max_length=200)
 	res_type = models.CharField(max_length=200)
 	def __unicode__(self):
@@ -23,6 +22,15 @@ class Metric(models.Model):
 	def __unicode__(self):
 		return self.metric_name
 
+
+class Log(models.Model):
+	host = models.CharField(max_length=200)
+	res_name = models.CharField(max_length=200)
+	mtc_type = models.CharField(max_length=200)
+	time = models.DateTimeField('date of log')
+	log_info = models.CharField(max_length=2000)
+	def __unicode__(self):
+		return self.res_name + "_log"
 
 	
 	

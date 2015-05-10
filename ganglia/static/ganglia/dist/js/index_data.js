@@ -7,6 +7,7 @@ var onshow_res="cpu";    //res showwing now
 //function for initting page modules
 $(function(){
 	init_hstatus();  //init module hosts status
+    show_log();
     update_util();   //init module res util     
     plot_avg("#area-chart","cpu",false);   //init to show cpu info 
 });
@@ -233,3 +234,44 @@ function update_host_status(){
 		value: down_num
 	}]);
 } 		
+
+//show the latest 8 log 
+function show_log(){
+    var req_url = "/ganglia/get_log";
+    var xml_http = new XMLHttpRequest();    
+    var log_list;
+    
+    xml_http.open("GET",req_url,false);
+    xml_http.send();
+    log_list = JSON.parse(xml_http.responseText);
+
+    for(var i=0;i<log_list.length;i++){
+        add_log(log_list[i]);
+    }
+}
+
+function add_log(log_dict){
+    var owner = log_dict['owner'];
+    var log_info = log_dict['info'];
+    var time = log_dict['time'];
+
+    var a_div = document.createElement('a');
+    var i_div = document.createElement('i');
+    var log_span_div = document.createElement('span');
+    var time_span_div = document.createElement('span');
+    var em_div = document.createElement('em');
+
+    a_div.setAttribute('href',"#");
+    a_div.setAttribute('class','list-group-item');
+    i_div.setAttribute('class','fa fa-warning fa-fw');
+    time_span_div.setAttribute('class','pull-right text-muted small');
+
+    log_span_div.innerHTML = "log of "+owner;
+    em_div.innerHTML = time;
+
+    time_span_div.appendChild(em_div);
+    a_div.appendChild(i_div);
+    a_div.appendChild(log_span_div);
+    a_div.appendChild(time_span_div);
+    $('#log_list').prepend(a_div);
+}   

@@ -8,5 +8,7 @@ urlpatterns = patterns('',
     url(r'^xml/(?P<host_name>\S+)/(?P<rrd_name>\w+)/(?P<time_slot>\d+)/$', views.get_text),
     url(r'^last_update/(?P<host_name>\S+)/$', views.last_update),
     url(r'^last_mtc_avg/(?P<rrd_name>\w+)/$', views.last_mtc_avg),
-    url(r'^hour_mtc_avg/(?P<rrd_name>\w+)/$', views.hour_mtc_avg)
+    url(r'^hour_mtc_avg/(?P<rrd_name>\w+)/$', views.hour_mtc_avg),
+    url(r'^get_log/$', views.get_log),
+    url(r'^alert_post/$', views.deal_log)
 )

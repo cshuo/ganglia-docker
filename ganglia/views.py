@@ -1,12 +1,14 @@
 from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponse
-from ganglia.models import Resource,Metric,Host
+from django.http import JsonResponse
+from ganglia.models import Resource,Metric,Host,Log
 import json
 from ganglia.util import str_to_list,res_img,read_ganglia_conf,add_items,reason_func
 import os 
 import commands 
 from sys import stdin,stdout,stderr
 import time 
+from django.utils import timezone
 
 
 # Create your views here.
@@ -123,3 +125,41 @@ def hour_mtc_avg(request,rrd_name):
     command = "rrdtool xport --start end-1h --end now --step 10 DEF:ds1=%s:sum:AVERAGE DEF:ds2=%s:num:AVERAGE XPORT:ds1:sum XPORT:ds2:num" % (base_url,base_url)
     status, output = commands.getstatusoutput(command)
     return HttpResponse(output)
+
+
+#this func deal with alert post data, store it in to Log database
+def deal_log(request):
+    if request.POST:
+        hostname = request.POST['host_name']
+        resname = request.POST['res_name']
+        mtcname = request.POST['mtc_name']
+        log_info = request.POST['log_info']
+        #save the log to Log table in db
+        log = Log(host=hostname,res_name=resname,mtc_type=mtcname,time=timezone.now(),log_info=log_info)
+        log.save()
+        return HttpResponse("%s %s %s %s" % (hostname,mtcname,time,log_info));
+
+
+#get the latest 8 log info
+def get_log(request):
+    lastest_log_list = Log.objects.order_by('-time')[:8]
+    re_list = []
+    for log in lastest_log_list:
+        log_dict = {}
+        log_dict['owner'] = "%s->%s->%s" % (log.host, log.res_name,log.mtc_type);
+        log_dict['info'] = log.log_info
+        log_dict['time'] = log.time
+        re_list.append(log_dict)
+
+    #False for not dict 
+    return JsonResponse(re_list, safe=False) 
+
+
+
+
+
+
+
+
+
+

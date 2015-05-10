@@ -190,14 +190,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+        <h4 class="modal-title" id="myModalLabel">Alerting!</h4>
       </div>
       <div class="modal-body">
         <div class="alert alert-danger" role="alert">
          <p><span id="warn-mtc"></span> have been exceeding the threshold in last 10 minutes</p>         
            </div>     
         {% if relate_list %}
-           <h4 align="center">Suggested metering list: </h4>
+           <h4 align="center">Suggested metric list: </h4>
            <ul style="padding-left:60px">
             {% for res in relate_list %}
             <li><a href="{% url 'ganglia:res_info' host_id res.id %}">{{res.res_name}}</a></li>
@@ -227,6 +227,7 @@
 var mtc_name = get_mtc_list();
 var hostname = '{{ res.res_hostname }}';
 var res_name = '{{res.res_name}}';
+var csrf_token = '{{ csrf_token }}';
 
 function get_mtc_list(){
     var m_list = [];    

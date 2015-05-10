@@ -3,7 +3,7 @@ var mtc_title = document.getElementById('on_show_metric');
 var mtc_time = document.getElementById('time_name');
 var elem = "#mtc-chart";
 var init_alert = 1;    //whether setup a timely task
-var alert_interval_id;
+var alert_interval_id;    //this is for cancel alert setinterval func
 
 //init func 
 $(function(){          
@@ -283,6 +283,30 @@ function alert_func(){
         alert("all Num is NaN!!");    
     else if(alert_sign ==1){
         $("#warn-mtc").html(alert_mtc);
-        $("#myModal").modal("show");      
+        $("#myModal").modal("show");
+        var log = "exceed the threshold(" + lower_bound + ", " + upper_bound+")";
+        post_log(hostname,res_name,alert_mtc,log);
     }            
 }
+
+
+function post_log(hostname,resname,mtcname,log){
+    $.ajax({
+        url:"/ganglia/alert_post/",
+        type:"POST",
+        data:{
+            csrfmiddlewaretoken: csrf_token,
+            host_name: hostname,
+            res_name: resname,
+            mtc_name: mtcname,
+            log_info: log
+        },
+        success: function(response){alert(response);},
+        complete: function(){},
+        error: function(xhr,testStatus,thrownError){ alert("post data error");}
+    });
+}
+
+
+
+
