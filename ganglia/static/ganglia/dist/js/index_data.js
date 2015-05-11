@@ -115,7 +115,7 @@ function update_cluster_res() {
 /*function for getting usg data for specific host's metric*/
 function get_hour_metric(mtc_name){    
     var v_array = [];
-    var base_url = "http://114.212.189.132:8000/ganglia/hour_mtc_avg/" + mtc_name;
+    var base_url = "/ganglia/hour_mtc_avg/" + mtc_name;
     var xml_doc;
     var xml_http = new XMLHttpRequest();    
     
@@ -197,7 +197,7 @@ function update_util(){
  * get metric avg use data
 */
 function get_mtc_avg(mtc_name){
-	var base_url = "http://114.212.189.132:8000/ganglia/last_mtc_avg/" + mtc_name;
+	var base_url = "/ganglia/last_mtc_avg/" + mtc_name;
 	var sum, num;
 	var v_arr;
 	var xml_http = new XMLHttpRequest();

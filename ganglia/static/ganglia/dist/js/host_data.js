@@ -168,7 +168,7 @@ function get_mtc_msg(req_url){
  *get metrics msg of a res with a specified time interval 
  */
 function get_plot_msg(res_name,time_slot){
-    var base_url = "http://114.212.189.132:8000/ganglia/xml/" + hostname;
+    var base_url = "/ganglia/xml/" + hostname;
     var dataset = [];   //for datas of every metric
     var url_list = [];  //url for metrics 
     var mtc_name = [];    

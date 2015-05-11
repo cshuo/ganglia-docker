@@ -11,7 +11,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="">Monitor Admin Dashboard</a>                
+            <a class="navbar-brand" href="{% url 'ganglia:index'%}">Monitor Admin Dashboard</a>                
         </div>
         <!-- /.navbar-header -->
 
@@ -280,7 +280,7 @@ function get_host_num(){
     var num = [];
     num[0] = 0;
     num[1] = 0;            
-    var base_url = "http://114.212.189.132:8000/ganglia/last_update/";
+    var base_url = "/ganglia/last_update/";
     {% if host_list %}                
     {% for host in host_list %}                                    
     var req_url = base_url + '{{ host.host_name }}';
