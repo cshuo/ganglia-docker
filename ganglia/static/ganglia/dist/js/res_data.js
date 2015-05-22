@@ -81,13 +81,13 @@ function update_plot(){
   function get_unit(axes_name){
     var unit = "";
     if(axes_name == "Mem")
-        unit = "(KB)";
+        unit = " GB";
     else if(axes_name == "Disk")
-        unit = "(GB)";
+        unit = " GB";
     else if(axes_name == "Cpu")
-        unit = "(%)";
+        unit = " %";
     else if(axes_name == "Network")
-        unit = "(packet/s)";
+        unit = " p/s";
     return unit;
   }
 
@@ -125,6 +125,11 @@ function plot_mtc(elem_id,mtc_n,time_s){
                     mode: "time",                  
                     timeformat: time_fmt
                 },
+        yaxis: {
+                tickFormatter: function(v){
+                    return v + get_unit(res_name);
+                }
+        },
         grid: {
                 borderColor: "#f3f3f3",
                 borderWidth: 1,
@@ -174,6 +179,8 @@ function plot_mtc(elem_id,mtc_n,time_s){
 function get_plot_data(metric_name,time_s){
   var url = "/ganglia/xml/" + hostname + '/' + metric_name + '/' + time_s +'/';
   var data_pair = get_mtc_msg(url);
+  if(metric_name.substring(0,3) == 'mem')
+    data_pair = mem_data_modify(data_pair);
   var dataset = [{data:data_pair,label:metric_name,color:"#3c8dcc"}];  
   return dataset;
 }

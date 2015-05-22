@@ -42,7 +42,7 @@ $(function(){
  * basic plot func 
  */
 function plot_func(elem_id,res_name,time_slot,stack_opt){
-    var time_fmt,tooltip_op;
+    var time_fmt,tooltip_op,unit;
     if(time_slot == '1'){
         time_fmt = "%H:%M";
         tooltip_op = {
@@ -67,11 +67,26 @@ function plot_func(elem_id,res_name,time_slot,stack_opt){
             month: "short",day: "numeric"
         };
     }
+
+    if(res_name == "cpu")
+        unit = "%"
+    if(res_name == "mem")
+        unit = "GB"
+    if(res_name == "disk")
+        unit = "GB"
+    if(res_name == "net")
+        unit = "B/s"
+
     var obj_plot = $.plot(elem_id, get_plot_msg(res_name,time_slot), {
         xaxis: {
                     mode: "time",                  
                     timeformat: time_fmt
                 },
+        yaxis: {
+                tickFormatter: function(v){
+                    return v + unit;
+                }
+        },
         grid: {
                 borderColor: "#f3f3f3",
                 borderWidth: 1,
@@ -201,6 +216,8 @@ function get_plot_msg(res_name,time_slot){
 
     for(var i=0; i<url_list.length; i++){
         var data_pair = get_mtc_msg(url_list[i]);        
+        if(res_name == 'mem')         
+            data_pair = mem_data_modify(data_pair);
         var plot_data = {data:data_pair,label:mtc_name[i],color:plot_color[i]};
         dataset.push(plot_data);    
     }

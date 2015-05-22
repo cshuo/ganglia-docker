@@ -46,11 +46,12 @@ function init_hstatus(){
 //function for plotting cluster overview
 function plot_avg(elem_id,res_name,stack_opt){
    // init to show cluster cpu util 
+
     metric_plot = $.plot(elem_id, data_for_plot(res_name), {
         xaxis: {
                     mode: "time",                    
                     timeformat: "%H:%M:%S"
-                },
+                },        
         grid: {
                 borderColor: "#f3f3f3",
                 tickColor: "#f3f3f3",
@@ -145,15 +146,15 @@ function data_for_plot(res_name){
         d3 = get_hour_metric("cpu_nice");
         d4 = get_hour_metric("cpu_idle");        
         datasets = [{data:d1,label:"cpu_user  ",color:"#3c8d00"},{data:d2,label:"cpu_system",color:"#3c8dcc"},
-        {data:d3,label:"cpu_wait",color:"#eeeeff"},{data:d4,label:"cpu_idle",color:"#66ffee"}];               
+        {data:d3,label:"cpu_wait",color:"#eeeeff"},{data:d4,label:"cpu_idle (%)",color:"#66ffee"}];               
     } 
     if(res_name == "mem"){        
-        d1 = get_hour_metric("mem_free");
-        d2 = get_hour_metric("mem_cached");
-        d3 = get_hour_metric("mem_buffers");
-        d4 = get_hour_metric("mem_total");
+        d1 = mem_data_modify(get_hour_metric("mem_free"));
+        d2 = mem_data_modify(get_hour_metric("mem_cached"));
+        d3 = mem_data_modify(get_hour_metric("mem_buffers"));
+        d4 = mem_data_modify(get_hour_metric("mem_total"));
         datasets = [{data:d1,label:"mem_free",color:"#3c8d00"},{data:d2,label:"mem_cached",color:"#3c8dcc"},
-        {data:d3,label:"mem_buffers",color:"#eeeeff"},{data:d4,label:"mem_total",color:"#66ffee"}];               
+        {data:d3,label:"mem_buffers",color:"#eeeeff"},{data:d4,label:"mem_total (GB)",color:"#66ffee"}];               
     }
     if(res_name == "load"){        
         d1 = get_hour_metric("load_one");
@@ -165,7 +166,7 @@ function data_for_plot(res_name){
     if(res_name == "network"){        
         d1 = get_hour_metric("bytes_in");
         d2 = get_hour_metric("bytes_out");
-        datasets = [{data:d1,label:"bytes_in",color:"#3c8d00"},{data:d2,label:"bytes_out",color:"#3c8dcc"}];        
+        datasets = [{data:d1,label:"bytes_in",color:"#3c8d00"},{data:d2,label:"bytes_out (bytes/s)",color:"#3c8dcc"}];        
     }
     return datasets;
 }
@@ -200,25 +201,34 @@ function get_mtc_avg(mtc_name){
 	var base_url = "/ganglia/last_mtc_avg/" + mtc_name;
 	var sum, num;
 	var v_arr;
-	var xml_http = new XMLHttpRequest();
-	xml_http.open("GET",base_url,false);
-	xml_http.send();
+    var str;
+
+	var xmlhttp = new XMLHttpRequest();
 	
-	var str = xml_http.responseText;
-	v_arr = str.split(" ");	
-	sum = parseFloat(v_arr[0]);
-	num = parseInt(v_arr[1]);			
-	return sum/num;
+    xmlhttp.open("GET",base_url,false);
+	xmlhttp.send();
+    str = xmlhttp.responseText;
+    v_arr = str.split(" ");  
+    sum = parseFloat(v_arr[0]);
+    num = parseInt(v_arr[1]);            
+
+    return sum/num;     
 }
 
 /*get specified host's update interval*/
 function get_update_host(req_url){            
 	var update_time;
-	var xml_http = new XMLHttpRequest();
-	xml_http.open("GET",req_url,false);
-	xml_http.send();
-	update_time = parseInt(xml_http.responseText);            
-	return update_time;
+	var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange=function()
+      {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            update_time = parseInt(xmlhttp.responseText);            
+            return update_time;
+        }
+      }
+      xmlhttp.open("GET",req_url,true);
+      xmlhttp.send();
 }
 
 /*function for update Host status Donut*/
@@ -238,16 +248,21 @@ function update_host_status(){
 //show the latest 8 log 
 function show_log(){
     var req_url = "/ganglia/get_log";
-    var xml_http = new XMLHttpRequest();    
+    var xmlhttp = new XMLHttpRequest();    
     var log_list;
     
-    xml_http.open("GET",req_url,false);
-    xml_http.send();
-    log_list = JSON.parse(xml_http.responseText);
-
-    for(var i=0;i<log_list.length;i++){
-        add_log(log_list[i]);
-    }
+    xmlhttp.onreadystatechange=function()
+      {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            log_list = JSON.parse(xmlhttp.responseText);     
+            for(var i=0;i<log_list.length;i++){
+                add_log(log_list[i]);
+            }
+        }
+      }
+    xmlhttp.open("GET",req_url,true);
+    xmlhttp.send();
 }
 
 function add_log(log_dict){
