@@ -10,5 +10,7 @@ urlpatterns = patterns('',
     url(r'^last_mtc_avg/(?P<rrd_name>\w+)/$', views.last_mtc_avg),
     url(r'^hour_mtc_avg/(?P<rrd_name>\w+)/$', views.hour_mtc_avg),
     url(r'^get_log/$', views.get_log),
-    url(r'^alert_post/$', views.deal_log)
+    url(r'^alert_post/$', views.deal_log),
+    url(r'^coreos-host/$', views.coreos_host, name='coreos-host'),
+    url(r'^deploy/$', views.deploy_app, name='deploy-app')
 )

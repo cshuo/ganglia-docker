@@ -158,6 +158,20 @@ def get_log(request):
 
 
 
+############ for coreOS manager #####################
+
+def coreos_host(request):
+    return render(request,'ganglia/coreos_host.html')
+
+
+
+def deploy_app(request):
+    return render(request,'ganglia/deploy.html')
+############ for coreOS manager #####################
+
+
+
+
 
 
 
