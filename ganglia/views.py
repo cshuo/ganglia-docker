@@ -156,6 +156,11 @@ def get_log(request):
 
 
 
+def all_log(request):
+    log_list = Log.objects.all()
+    context = {'log_list':log_list}
+    return render(request,'ganglia/log.html',context)
+
 
 
 ############ for coreOS manager #####################
